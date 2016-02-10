@@ -112,9 +112,9 @@ private:
             // connection succeeded, mark socket as non-blocking
             if (_socket >= 0) 
             {
-                // turn socket into a non-blocking socket
-                fcntl(_socket, F_SETFL, O_NONBLOCK);
-
+                // turn socket into a non-blocking socket and set the close-on-exec bit
+                fcntl(_socket, F_SETFL, O_NONBLOCK | O_CLOEXEC);
+                
                 // we want to enable "nodelay" on sockets (otherwise all send operations are s-l-o-w
                 int optval = 1;
                 
@@ -177,7 +177,7 @@ public:
     {
         // only works if the incoming pipe is readable
         if (fd != _pipe.in() || !(flags & readable)) return this;
-        
+
         // do we have a valid socket?
         if (_socket >= 0) return new TcpConnected(_connection, _socket, std::move(_buffer), _handler);
         
