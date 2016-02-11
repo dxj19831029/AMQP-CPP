@@ -80,11 +80,11 @@ public:
      *  @param  noWait      do not wait on response
      *  @param  arguments   additional arguments
      */
-    ExchangeDeclareFrame(uint16_t channel, const std::string& name, const std::string& type, bool passive, bool durable, bool noWait, const Table& arguments) :
+    ExchangeDeclareFrame(uint16_t channel, const std::string& name, const std::string& type, bool passive, bool durable, bool noWait, bool autoDelete, const Table& arguments) :
         ExchangeFrame(channel, (name.length() + type.length() + arguments.size() + 5)), // size of name, type and arguments + 1 (all booleans are stored in 1 byte) + 2 (deprecated short) + 2 (string sizes)
         _name(name),
         _type(type),
-        _bools(passive, durable, false, false, noWait),
+        _bools(passive, durable, autoDelete, false, noWait),
         _arguments(arguments)
     {}
 
@@ -163,6 +163,15 @@ public:
         return _bools.get(1);
     }
 
+    /**
+     *  returns whether the queue is deleted if unused
+     *  @return bool
+     */
+    bool autoDelete() const
+    {
+        return _bools.get(2);
+    }
+    
     /**
      *  Do not wait for a response
      *  @return bool

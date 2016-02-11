@@ -225,7 +225,7 @@ Deferred &ChannelImpl::declareExchange(const std::string &name, ExchangeType typ
     if (type == ExchangeType::headers)exchangeType = "headers";
 
     // send declare exchange frame
-    return push(ExchangeDeclareFrame(_id, name, exchangeType, (flags & passive) != 0, (flags & durable) != 0, false, arguments));
+    return push(ExchangeDeclareFrame(_id, name, exchangeType, (flags & passive) != 0, (flags & durable) != 0, false, (flags & autodelete) != 0, arguments));
 }
 
 /**
